@@ -1,6 +1,13 @@
 import Image from "next/image";
 import { Geist, Geist_Mono } from "next/font/google";
 
+interface notes {
+  id: string;
+  title: string;
+  content: string;
+  created_at: string;
+}
+
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
