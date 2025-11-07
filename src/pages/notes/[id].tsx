@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
-import { supabase } from '../lib/SupabaseClient';
-import Link from 'next/link';
+import { supabase } from '../../lib/SupabaseClient';
 
 function NotesPage() {
   const [notes, setNotes] = useState<any[]>([]);
@@ -12,7 +11,7 @@ function NotesPage() {
         .select('*');
 
       if (error) {
-        console.error('Error fetching notes:', error);
+        console.error('Error fetching notes:', error.message, error.details);
       } else if (data) {
         setNotes(data);
       }
@@ -22,13 +21,20 @@ function NotesPage() {
   }, []);
 
   return (
-    <ul>
-      {notes.map(note => (
-        <Link href={`/notes/${note.id}`} key={note.id}>
-        <li key={note.id}>{note.title}</li>
-        </Link>
-      ))}
-    </ul>
+    <div>
+      <h1>Notes</h1>
+      {notes.length === 0 ? (
+        <p>No notes found.</p>
+      ) : (
+        <ul>
+          {notes.map(note => (
+            <li key={note.id}>
+              <pre>{JSON.stringify(note, null, 2)}</pre>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
   );
 }
 
