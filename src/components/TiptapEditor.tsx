@@ -41,8 +41,9 @@ const TiptapEditor = ({ content, onChange }: TiptapEditorProps) => {
       Placeholder.configure({
         placeholder: 'Tulis catatanmu di sini...',
       }),
-      TextStyle,
-      FontSize,
+  TextStyle,
+  // Set global default font size to 12px; headings created on startup will be set to 14px explicitly.
+  FontSize.configure({ defaultSize: '12px' }),
     ],
     content,
     editorProps: {
@@ -58,8 +59,9 @@ const TiptapEditor = ({ content, onChange }: TiptapEditorProps) => {
         doc.childCount === 1 &&
         doc.firstChild?.isText &&
         (doc.firstChild?.textContent?.length ?? 0) > 0
-      ) {
-        editor.chain().focus().setNode('heading', { level: 1 }).run();
+      ){
+        // Create a heading and immediately apply a fontSize mark of 14px to its content.
+        editor.chain().focus().setNode('heading', { level: 1 }).setMark('fontSize', { size: '18px' }).run();
       }
     },
     onUpdate: ({ editor }) => {
