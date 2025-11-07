@@ -85,13 +85,20 @@ const TiptapEditor = ({ content, onChange }: TiptapEditorProps) => {
         <select
           onChange={(e) => {
             const size = e.target.value;
-            // Some versions of the fontsize extension expose commands on editor.commands
-            // rather than on the chain builder; call focus first then the command.
-            editor.chain().focus().run();
-            // call the plain command to avoid "setFontSize is not a function" on chain()
-            // (the extension registers `setFontSize` via addCommands)
+            // Ensure editor is focused first using the plain command API
+            // (avoid potential timing/chain exposure issues).
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            (editor.commands as any).setFontSize?.(size);
+            (editor.commands as any).focus?.();
+
+            // Try the extension's command first.
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const applied = (editor.commands as any).setFontSize?.(size);
+
+            // Fallback: if the command wasn't available or didn't apply, set the mark directly
+            // via the chain API using the mark name used by the extension ('fontSize').
+            if (!applied) {
+              editor.chain().focus().setMark('fontSize', { size }).run();
+            }
           }}
           className="p-2 rounded hover:bg-gray-200"
         >
