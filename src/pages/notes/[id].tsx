@@ -14,6 +14,7 @@ const NotePage = () => {
   const { id } = router.query;
 
   const [note, setNote] = useState<Note | null>(null);
+  const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
 
   useEffect(() => {
@@ -30,25 +31,30 @@ const NotePage = () => {
         console.error('Error fetching note:', error);
       } else {
         setNote(data);
+        setTitle(data.title);
         setContent(data.content);
       }
     };
-
     fetchNote();
   }, [id]);
+
+  const handleEditorChange = (newTitle: string, newContent: string) => {
+    setTitle(newTitle);
+    setContent(newContent);
+  };
 
   const handleSave = async () => {
     if (!note) return;
 
     const { error } = await supabase
       .from('notes')
-      .update({ content: content })
+      .update({ title: title, content: content })
       .eq('id', note.id);
 
     if (error) {
       alert('Error saving note: ' + error.message);
     } else {
-      alert('Note saved successfully!');
+      router.push('/'); // redirect ke /dashboard
     }
   };
 
@@ -58,8 +64,7 @@ const NotePage = () => {
 
   return (
     <div>
-      <h1>{note.title}</h1>
-      <TiptapEditor content={content} onChange={setContent} />
+      <TiptapEditor content={content} onChange={handleEditorChange} />
       <button onClick={handleSave}>Save</button>
     </div>
   );

@@ -5,6 +5,8 @@ import Placeholder from '@tiptap/extension-placeholder';
 import Underline from '@tiptap/extension-underline';
 import Link from '@tiptap/extension-link';
 import Highlight from '@tiptap/extension-highlight';
+import { TextStyle } from '@tiptap/extension-text-style';
+import  FontSize  from 'tiptap-fontsize-extension';
 import { useCallback } from 'react';
 import clsx from 'clsx';
 import {
@@ -23,30 +25,46 @@ import {
 
 interface TiptapEditorProps {
   content: string;
-  onChange: (content: string) => void;
+  onChange: (title: string, content: string) => void;
 }
 
 const TiptapEditor = ({ content, onChange }: TiptapEditorProps) => {
   const editor = useEditor({
     immediatelyRender:false,
     extensions: [
-      StarterKit,
-      Underline,
-      Link.configure({ openOnClick: false }),
+      StarterKit.configure({
+        link: {
+          openOnClick: false,
+        },
+      }),
       Highlight,
       Placeholder.configure({
         placeholder: 'Tulis catatanmu di sini...',
       }),
+      TextStyle,
+      FontSize,
     ],
     content,
     editorProps: {
       attributes: {
         class:
-          'prose prose-sm sm:prose lg:prose-lg xl:prose-2xl focus:outline-none min-h-[300px] p-4 rounded-xl border border-gray-300 bg-white shadow-sm',
+          'prose-xl sm:prose lg:prose-lg xl:prose-2xl focus:outline-none min-h-[300px] p-4 bg-white',
       },
     },
+    onCreate: ({ editor }) => {
+      const { doc } = editor.state;
+      // guard against null/undefined firstChild
+      if (
+        doc.childCount === 1 &&
+        doc.firstChild?.isText &&
+        (doc.firstChild?.textContent?.length ?? 0) > 0
+      ) {
+        editor.chain().focus().setNode('heading', { level: 1 }).run();
+      }
+    },
     onUpdate: ({ editor }) => {
-      onChange(editor.getHTML());
+      const firstLine = editor.state.doc.firstChild?.textContent || '';
+      onChange(firstLine, editor.getHTML());
     },
   });
 
@@ -63,7 +81,30 @@ const TiptapEditor = ({ content, onChange }: TiptapEditorProps) => {
   return (
     <div className="flex flex-col gap-2">
       {/* Toolbar */}
-      <div className="flex flex-wrap gap-2 items-center border rounded-lg bg-gray-50 p-2">
+      <div className="flex flex-wrap gap-2 items-center bg-gray-50 p-2">
+        <select
+          onChange={(e) => {
+            const size = e.target.value;
+            // Some versions of the fontsize extension expose commands on editor.commands
+            // rather than on the chain builder; call focus first then the command.
+            editor.chain().focus().run();
+            // call the plain command to avoid "setFontSize is not a function" on chain()
+            // (the extension registers `setFontSize` via addCommands)
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            (editor.commands as any).setFontSize?.(size);
+          }}
+          className="p-2 rounded hover:bg-gray-200"
+        >
+          <option value="">Font Size</option>
+          <option value="12px">12</option>
+          <option value="14px">14</option>
+          <option value="16px">16</option>
+          <option value="18px">18</option>
+          <option value="24px">24</option>
+          <option value="30px">30</option>
+          <option value="36px">36</option>
+        </select>
+
         <button
           onClick={() => editor.chain().focus().toggleBold().run()}
           className={clsx('p-2 rounded hover:bg-gray-200', {

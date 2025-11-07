@@ -26,9 +26,8 @@ body {
 } */
 
 /* Tiptap Editor Styles */
-.tiptap {
-  padding: 1rem;
-  border: 1px solid #ccc;
+/* .tiptap {
+  padding: 2px;
   border-radius: 0.5rem;
 }
 
@@ -71,4 +70,4 @@ body {
 .bubble-menu button.is-active,
 .floating-menu button.is-active {
   background-color: #007bff;
-}
+} */
