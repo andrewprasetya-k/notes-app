@@ -21,12 +21,30 @@ function NotesPage() {
     fetchNotes();
   }, []);
 
+  const handleDelete = async (id:string)=>{
+    const { error } = await supabase
+      .from('notes')
+      .delete()
+      .eq('id', id);
+
+    if (error) {
+      alert('Error deleting note: ' + error.message);
+    } else {
+      setNotes(notes.filter(note => note.id !== id));
+    }
+  }
+
   return (
     <main className="p-4">
       <ul>
         {notes.map((note) => (
-          <li key={note.id}>
-            <Link href={`/notes/${note.id}`}>{note.title}</Link>
+          <li key={note.id} className='p-4 border-b-2'>
+            <div>
+              <Link href={`/notes/${note.id}`}>{note.title}</Link>
+            </div>
+            <button type="button" onClick={() => handleDelete(note.id)}>
+              Delete
+            </button>
           </li>
         ))}
       </ul>
