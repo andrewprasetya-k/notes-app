@@ -22,13 +22,18 @@ function NotesPage() {
   }, []);
 
   return (
-    <ul>
-      {notes.map(note => (
-        <Link href={`/notes/${note.id}`} key={note.id}>
-        <li key={note.id}>{note.title}</li>
-        </Link>
-      ))}
-    </ul>
+    <main className="p-4">
+      <ul>
+        {notes.map((note) => (
+          <li key={note.id}>
+            <Link href={`/notes/${note.id}`}>{note.title}</Link>
+          </li>
+        ))}
+      </ul>
+      <div className="mt-4">
+        <Link href="/notes/new">Create New Note</Link>
+      </div>
+    </main>
   );
 }
 
