@@ -31,7 +31,7 @@ interface TiptapEditorProps {
 
 const TiptapEditor = ({ content, title: initialTitle, onChange }: TiptapEditorProps) => {
   const [title, setTitle] = useState(initialTitle ?? '');
-  const [currentFontSize, setCurrentFontSize] = useState('');
+  const [currentFontSize, setCurrentFontSize] = useState('font size');
   
   const editor = useEditor({
     immediatelyRender:false,
@@ -130,33 +130,6 @@ const TiptapEditor = ({ content, title: initialTitle, onChange }: TiptapEditorPr
           >
             -
           </button>
-
-          <select
-            onChange={(e) => {
-              const size = e.target.value;
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              (editor.commands as any).focus?.();
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              const applied = (editor.commands as any).setFontSize?.(size);
-              if (!applied) {
-                editor.chain().focus().setMark('fontSize', { size }).run();
-              }
-              // Update display immediately
-              setCurrentFontSize(size);
-            }}
-            className="p-2 rounded hover:bg-gray-200"
-            value={currentFontSize}
-          >
-            <option value="">Font Size</option>
-            <option value="12px">12</option>
-            <option value="14px">14</option>
-            <option value="16px">16</option>
-            <option value="18px">18</option>
-            <option value="24px">24</option>
-            <option value="30px">30</option>
-            <option value="36px">36</option>
-          </select>
-
           <div className="text-sm text-gray-600">{currentFontSize}</div>
 
           <button
