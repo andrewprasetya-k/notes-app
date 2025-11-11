@@ -43,6 +43,8 @@ const TiptapEditor = ({ content, title: initialTitle, onChange }: TiptapEditorPr
       Placeholder.configure({
         placeholder: 'Tulis catatanmu di sini...',
       }),
+      Underline,
+      Link,
   TextStyle,
   // Set global default font size to 12px; headings created on startup will be set to 14px explicitly.
   FontSize.configure({ defaultSize: '12px' }),
@@ -93,35 +95,66 @@ const TiptapEditor = ({ content, title: initialTitle, onChange }: TiptapEditorPr
 
       {/* Toolbar */}
       <div className="flex flex-wrap gap-2 items-center bg-gray-50 p-2">
-        <select
-          onChange={(e) => {
-            const size = e.target.value;
-            // Ensure editor is focused first using the plain command API
-            // (avoid potential timing/chain exposure issues).
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            (editor.commands as any).focus?.();
+        {/* Font size controls */}
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => {
+              // decrease font size
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              const applied = (editor.commands as any).decreaseFontSize?.();
+              if (!applied) {
+                const current = editor.getAttributes('fontSize')?.size || '12px';
+                const newSize = Math.max(1, parseInt(current.replace('px', '')) - 1) + 'px';
+                editor.chain().focus().setMark('fontSize', { size: newSize }).run();
+              }
+            }}
+            className="p-2 rounded hover:bg-gray-200"
+            title="Decrease font size"
+          >
+            -
+          </button>
 
-            // Try the extension's command first.
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            const applied = (editor.commands as any).setFontSize?.(size);
+          <select
+            onChange={(e) => {
+              const size = e.target.value;
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              (editor.commands as any).focus?.();
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              const applied = (editor.commands as any).setFontSize?.(size);
+              if (!applied) {
+                editor.chain().focus().setMark('fontSize', { size }).run();
+              }
+            }}
+            className="p-2 rounded hover:bg-gray-200"
+            value={editor.getAttributes('fontSize')?.size || ''}
+          >
+            <option value="">Font Size</option>
+            <option value="12px">12</option>
+            <option value="14px">14</option>
+            <option value="16px">16</option>
+            <option value="18px">18</option>
+            <option value="24px">24</option>
+            <option value="30px">30</option>
+            <option value="36px">36</option>
+          </select>
 
-            // Fallback: if the command wasn't available or didn't apply, set the mark directly
-            // via the chain API using the mark name used by the extension ('fontSize').
-            if (!applied) {
-              editor.chain().focus().setMark('fontSize', { size }).run();
-            }
-          }}
-          className="p-2 rounded hover:bg-gray-200"
-        >
-          <option value="">Font Size</option>
-          <option value="12px">12</option>
-          <option value="14px">14</option>
-          <option value="16px">16</option>
-          <option value="18px">18</option>
-          <option value="24px">24</option>
-          <option value="30px">30</option>
-          <option value="36px">36</option>
-        </select>
+          <button
+            onClick={() => {
+              // increase font size
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              const applied = (editor.commands as any).increaseFontSize?.();
+              if (!applied) {
+                const current = editor.getAttributes('fontSize')?.size || '12px';
+                const newSize = (parseInt(current.replace('px', '')) + 1) + 'px';
+                editor.chain().focus().setMark('fontSize', { size: newSize }).run();
+              }
+            }}
+            className="p-2 rounded hover:bg-gray-200"
+            title="Increase font size"
+          >
+            +
+          </button>
+        </div>
 
         <button
           onClick={() => editor.chain().focus().toggleBold().run()}
@@ -215,6 +248,43 @@ const TiptapEditor = ({ content, title: initialTitle, onChange }: TiptapEditorPr
           })}
         >
           <FaHeading />
+        </button>
+        
+        <button
+          onClick={() => {
+            // undo/redo buttons
+            editor.chain().focus().undo().run();
+          }}
+          className="p-2 rounded hover:bg-gray-200"
+          title="Undo"
+        >
+          ↶
+        </button>
+
+        <button
+          onClick={() => {
+            editor.chain().focus().redo().run();
+          }}
+          className="p-2 rounded hover:bg-gray-200"
+          title="Redo"
+        >
+          ↷
+        </button>
+
+        <button
+          onClick={() => {
+            // clear formatting: try unsetAllMarks, fallback to unsetting known marks
+            try {
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              (editor.chain() as any).focus().unsetAllMarks()?.run?.();
+            } catch (e) {
+              editor.chain().focus().unsetMark('fontSize').unsetMark('highlight').unsetMark('textStyle').run();
+            }
+          }}
+          className="p-2 rounded hover:bg-gray-200"
+          title="Clear formatting"
+        >
+          ⎚
         </button>
       </div>
 
