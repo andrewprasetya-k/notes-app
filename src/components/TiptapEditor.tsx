@@ -138,6 +138,8 @@ const TiptapEditor = ({ content, title: initialTitle, onChange }: TiptapEditorPr
             <option value="36px">36</option>
           </select>
 
+          <div className="text-sm text-gray-600">{editor.getAttributes('fontSize')?.size || ''}</div>
+
           <button
             onClick={() => {
               // increase font size
@@ -274,17 +276,48 @@ const TiptapEditor = ({ content, title: initialTitle, onChange }: TiptapEditorPr
         <button
           onClick={() => {
             // clear formatting: try unsetAllMarks, fallback to unsetting known marks
-            try {
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              (editor.chain() as any).focus().unsetAllMarks()?.run?.();
-            } catch (e) {
-              editor.chain().focus().unsetMark('fontSize').unsetMark('highlight').unsetMark('textStyle').run();
+            // Try editor.commands.unsetAllMarks when available, otherwise unset common marks
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const unsetAll = (editor.commands as any).unsetAllMarks;
+            if (unsetAll) {
+              // call it directly
+              try {
+                (editor.commands as any).unsetAllMarks();
+              } catch (e) {
+                // fallthrough to individual unset
+              }
             }
+
+            // Fallback/unset common marks explicitly
+            editor
+              .chain()
+              .focus()
+              .unsetMark('bold')
+              .unsetMark('italic')
+              .unsetMark('underline')
+              .unsetMark('strike')
+              .unsetMark('code')
+              .unsetMark('link')
+              .unsetMark('highlight')
+              .unsetMark('fontSize')
+              .unsetMark('textStyle')
+              .run();
           }}
           className="p-2 rounded hover:bg-gray-200"
           title="Clear formatting"
         >
           ⎚
+        </button>
+        
+        <button
+          onClick={() => {
+            // remove link on selection
+            editor.chain().focus().unsetLink().run();
+          }}
+          className="p-2 rounded hover:bg-gray-200"
+          title="Remove link"
+        >
+          ×
         </button>
       </div>
 
