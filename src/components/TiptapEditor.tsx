@@ -7,7 +7,7 @@ import Link from '@tiptap/extension-link';
 import Highlight from '@tiptap/extension-highlight';
 import { TextStyle } from '@tiptap/extension-text-style';
 import  FontSize  from 'tiptap-fontsize-extension';
-import { useCallback } from 'react';
+import { useCallback, useState, useEffect } from 'react';
 import clsx from 'clsx';
 import {
   FaBold,
@@ -25,10 +25,12 @@ import {
 
 interface TiptapEditorProps {
   content: string;
+  title?: string;
   onChange: (title: string, content: string) => void;
 }
 
-const TiptapEditor = ({ content, onChange }: TiptapEditorProps) => {
+const TiptapEditor = ({ content, title: initialTitle, onChange }: TiptapEditorProps) => {
+  const [title, setTitle] = useState(initialTitle ?? '');
   const editor = useEditor({
     immediatelyRender:false,
     extensions: [
@@ -52,24 +54,17 @@ const TiptapEditor = ({ content, onChange }: TiptapEditorProps) => {
           'prose-xl sm:prose lg:prose-lg xl:prose-2xl focus:outline-none min-h-[300px] p-4 bg-white',
       },
     },
-    onCreate: ({ editor }) => {
-      const { doc } = editor.state;
-      // guard against null/undefined firstChild
-      if (
-        doc.childCount === 1 &&
-        doc.firstChild?.isText &&
-        (doc.firstChild?.textContent?.length ?? 0) > 0
-      ){
-        // Create a heading and immediately apply a fontSize mark of 14px to its content.
-        editor.chain().focus().setNode('heading', { level: 1 }).setMark('fontSize', { size: '18px' }).run();
-      }
-    },
+    // no onCreate auto-heading — title is managed via the title input above
     onUpdate: ({ editor }) => {
-      const firstLine = editor.state.doc.firstChild?.textContent || '';
-      onChange(firstLine, editor.getHTML());
+      // keep editor content in sync; title is provided by the input above
+      onChange(title, editor.getHTML());
     },
   });
 
+  // keep local title in sync when parent changes it
+  useEffect(() => {
+    setTitle(initialTitle ?? '');
+  }, [initialTitle]);
   const addLink = useCallback(() => {
     if (!editor) return;
     const url = window.prompt('Masukkan URL:');
@@ -80,8 +75,22 @@ const TiptapEditor = ({ content, onChange }: TiptapEditorProps) => {
 
   if (!editor) return null;
 
+  const onTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newTitle = e.target.value;
+    setTitle(newTitle);
+    onChange(newTitle, editor.getHTML());
+  };
+
   return (
     <div className="flex flex-col gap-2">
+      {/* Title input */}
+      <input
+        value={title}
+        onChange={onTitleChange}
+        placeholder="Masukkan judulmu di sini..."
+        className="p-2 mb-2 border rounded"
+      />
+
       {/* Toolbar */}
       <div className="flex flex-wrap gap-2 items-center bg-gray-50 p-2">
         <select

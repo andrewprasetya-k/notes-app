@@ -64,7 +64,7 @@ const NotePage = () => {
 
   return (
     <div>
-      <TiptapEditor content={content} onChange={handleEditorChange} />
+      <TiptapEditor content={content} title={title} onChange={handleEditorChange} />
       <button onClick={handleSave}>Save</button>
     </div>
   );
