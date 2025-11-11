@@ -43,17 +43,16 @@ const NewNotePage = () => {
 
   return (
     <main className="p-4">
-  <h1 className="text-xl font-semibold mb-4">Create a new note</h1>
-  <TiptapEditor content={content} title={title} onChange={handleEditorChange} />
-      <div className="mt-4">
-        <button
-          onClick={handleSave}
-          disabled={saving}
-          className="px-4 py-2 bg-blue-600 text-white rounded"
-        >
-          {saving ? 'Saving...' : 'Save'}
-        </button>
-      </div>
+      <TiptapEditor content={content} title={title} onChange={handleEditorChange} />
+          <div className="mt-4">
+            <button
+              onClick={handleSave}
+              disabled={saving}
+              className="px-4 py-2 bg-blue-600 text-white rounded"
+            >
+              {saving ? 'Saving...' : 'Save'}
+            </button>
+          </div>
     </main>
   );
 };
