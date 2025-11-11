@@ -120,7 +120,7 @@ const TiptapEditor = ({ content, title: initialTitle, onChange }: TiptapEditorPr
               } else {
                 // Update display after command
                 setTimeout(() => {
-                  const updated = editor.getAttributes('fontSize')?.size || '';
+                  const updated = editor.getAttributes('fontSize')?.size || 'font size';
                   setCurrentFontSize(updated);
                 }, 10);
               }
