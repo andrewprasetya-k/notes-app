@@ -48,8 +48,8 @@ const TiptapEditor = ({ content, title: initialTitle, onChange }: TiptapEditorPr
       Underline,
       Link,
   TextStyle,
-  // Set global default font size to 12px; headings created on startup will be set to 14px explicitly.
-  FontSize.configure({ defaultSize: '12px' }),
+  // Set global default font size to 14px
+  FontSize.configure({ defaultSize: '14px' }),
     ],
     content,
     editorProps: {
@@ -113,7 +113,7 @@ const TiptapEditor = ({ content, title: initialTitle, onChange }: TiptapEditorPr
               // eslint-disable-next-line @typescript-eslint/no-explicit-any
               const applied = (editor.commands as any).decreaseFontSize?.();
               if (!applied) {
-                const current = currentFontSize || '12px';
+                const current = currentFontSize || '14px';
                 const newSize = Math.max(1, parseInt(current.replace('px', '')) - 1) + 'px';
                 editor.chain().focus().setMark('fontSize', { size: newSize }).run();
                 setCurrentFontSize(newSize);
@@ -138,7 +138,7 @@ const TiptapEditor = ({ content, title: initialTitle, onChange }: TiptapEditorPr
               // eslint-disable-next-line @typescript-eslint/no-explicit-any
               const applied = (editor.commands as any).increaseFontSize?.();
               if (!applied) {
-                const current = currentFontSize || '12px';
+                const current = currentFontSize || '14px';
                 const newSize = (parseInt(current.replace('px', '')) + 1) + 'px';
                 editor.chain().focus().setMark('fontSize', { size: newSize }).run();
                 setCurrentFontSize(newSize);
