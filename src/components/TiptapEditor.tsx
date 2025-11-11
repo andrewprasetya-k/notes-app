@@ -100,7 +100,7 @@ const TiptapEditor = ({ content, title: initialTitle, onChange }: TiptapEditorPr
         value={title}
         onChange={onTitleChange}
         placeholder="Masukkan judulmu di sini..."
-        className="p-2 mb-2 border rounded"
+        className="p-2 mb-2 text-2xl font-bold outline-none border-none focus:outline-none focus:border-none"
       />
 
       {/* Toolbar */}
