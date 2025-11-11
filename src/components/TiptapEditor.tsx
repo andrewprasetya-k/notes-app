@@ -31,6 +31,8 @@ interface TiptapEditorProps {
 
 const TiptapEditor = ({ content, title: initialTitle, onChange }: TiptapEditorProps) => {
   const [title, setTitle] = useState(initialTitle ?? '');
+  const [currentFontSize, setCurrentFontSize] = useState('');
+  
   const editor = useEditor({
     immediatelyRender:false,
     extensions: [
@@ -60,6 +62,14 @@ const TiptapEditor = ({ content, title: initialTitle, onChange }: TiptapEditorPr
     onUpdate: ({ editor }) => {
       // keep editor content in sync; title is provided by the input above
       onChange(title, editor.getHTML());
+      // Update current font size display
+      const fontSize = editor.getAttributes('fontSize')?.size || '';
+      setCurrentFontSize(fontSize);
+    },
+    onSelectionUpdate: ({ editor }) => {
+      // Update font size display when selection changes
+      const fontSize = editor.getAttributes('fontSize')?.size || '';
+      setCurrentFontSize(fontSize);
     },
   });
 
@@ -103,9 +113,16 @@ const TiptapEditor = ({ content, title: initialTitle, onChange }: TiptapEditorPr
               // eslint-disable-next-line @typescript-eslint/no-explicit-any
               const applied = (editor.commands as any).decreaseFontSize?.();
               if (!applied) {
-                const current = editor.getAttributes('fontSize')?.size || '12px';
+                const current = currentFontSize || '12px';
                 const newSize = Math.max(1, parseInt(current.replace('px', '')) - 1) + 'px';
                 editor.chain().focus().setMark('fontSize', { size: newSize }).run();
+                setCurrentFontSize(newSize);
+              } else {
+                // Update display after command
+                setTimeout(() => {
+                  const updated = editor.getAttributes('fontSize')?.size || '';
+                  setCurrentFontSize(updated);
+                }, 10);
               }
             }}
             className="p-2 rounded hover:bg-gray-200"
@@ -124,9 +141,11 @@ const TiptapEditor = ({ content, title: initialTitle, onChange }: TiptapEditorPr
               if (!applied) {
                 editor.chain().focus().setMark('fontSize', { size }).run();
               }
+              // Update display immediately
+              setCurrentFontSize(size);
             }}
             className="p-2 rounded hover:bg-gray-200"
-            value={editor.getAttributes('fontSize')?.size || ''}
+            value={currentFontSize}
           >
             <option value="">Font Size</option>
             <option value="12px">12</option>
@@ -138,7 +157,7 @@ const TiptapEditor = ({ content, title: initialTitle, onChange }: TiptapEditorPr
             <option value="36px">36</option>
           </select>
 
-          <div className="text-sm text-gray-600">{editor.getAttributes('fontSize')?.size || ''}</div>
+          <div className="text-sm text-gray-600">{currentFontSize}</div>
 
           <button
             onClick={() => {
@@ -146,9 +165,16 @@ const TiptapEditor = ({ content, title: initialTitle, onChange }: TiptapEditorPr
               // eslint-disable-next-line @typescript-eslint/no-explicit-any
               const applied = (editor.commands as any).increaseFontSize?.();
               if (!applied) {
-                const current = editor.getAttributes('fontSize')?.size || '12px';
+                const current = currentFontSize || '12px';
                 const newSize = (parseInt(current.replace('px', '')) + 1) + 'px';
                 editor.chain().focus().setMark('fontSize', { size: newSize }).run();
+                setCurrentFontSize(newSize);
+              } else {
+                // Update display after command
+                setTimeout(() => {
+                  const updated = editor.getAttributes('fontSize')?.size || '';
+                  setCurrentFontSize(updated);
+                }, 10);
               }
             }}
             className="p-2 rounded hover:bg-gray-200"
