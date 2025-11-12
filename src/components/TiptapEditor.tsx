@@ -29,7 +29,8 @@ interface TiptapEditorProps {
   onChange: (title: string, content: string) => void;
 }
 
-const TiptapEditor = ({ content, title: initialTitle, onChange }: TiptapEditorProps) => {
+const TiptapEditor = ({ content, title: initialTitle, onChange }: TiptapEditorProps) => 
+{
   const [title, setTitle] = useState(initialTitle ?? '');
   const [currentFontSize, setCurrentFontSize] = useState('font size');
   
@@ -94,52 +95,53 @@ const TiptapEditor = ({ content, title: initialTitle, onChange }: TiptapEditorPr
     onChange(newTitle, editor.getHTML());
   };
 
-  return (
-    <div className="flex flex-col">
-      {/* Title input */}
-      <div className="border-b border-gray-200 px-6 pt-6 pb-4">
+  return(
+    <div className="flex flex-col h-screen">
+      {/* Title Section - Full Width */}
+      <div className="px-12 pt-12 pb-6">
         <input
           value={title}
           onChange={onTitleChange}
           placeholder="Untitled"
-          className="w-full text-3xl font-bold outline-none border-none focus:outline-none focus:border-none text-gray-900 placeholder-gray-300"
+          className="w-full text-5xl font-bold outline-none border-none focus:outline-none focus:border-none text-gray-900 placeholder-gray-300 leading-tight"
         />
       </div>
 
-      {/* Toolbar */}
-      <div className="flex flex-wrap gap-1 items-center bg-gray-50 border-b border-gray-200 px-4 py-3">
-        {/* Font size controls */}
-        <div className="flex items-center gap-1 mr-2 border-r border-gray-300 pr-2">
-          <button
-            onClick={() => {
-              // decrease font size
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              const applied = (editor.commands as any).decreaseFontSize?.();
-              if (!applied) {
-                // Get current from editor OR from our display state (which tracks stored marks)
-                const editorSize = editor.getAttributes('fontSize')?.size || 
-                                   editor.getAttributes('textStyle')?.fontSize;
-                const displaySize = currentFontSize && currentFontSize !== '-' ? currentFontSize : null;
-                const current = editorSize || displaySize || '14px';
-                
-                const newSize = Math.max(1, parseInt(current.replace('px', '')) - 1) + 'px';
-                editor.chain().focus().setMark('textStyle', { fontSize: newSize }).run();
-                // Update display immediately so next click uses this value
-                setCurrentFontSize(newSize);
-              } else {
-                // Update display after command
-                setTimeout(() => {
-                  const updated = editor.getAttributes('fontSize')?.size || 
-                                  editor.getAttributes('textStyle')?.fontSize || '';
-                  setCurrentFontSize(updated);
-                }, 10);
-              }
-            }}
-            className="p-2 rounded-md hover:bg-gray-200 transition-colors"
-            title="Decrease font size"
-          >
-            -
-          </button>
+      {/* Toolbar - Sticky */}
+      <div className="sticky top-0 z-40 bg-white border-y border-gray-200 px-8 py-3 shadow-sm">
+        <div className="flex flex-wrap gap-1 items-center max-w-5xl">
+          {/* Font size controls */}
+          <div className="flex items-center gap-1 mr-3 pr-3 border-r border-gray-300">
+            <button
+              onClick={() => {
+                // decrease font size
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                const applied = (editor.commands as any).decreaseFontSize?.();
+                if (!applied) {
+                  // Get current from editor OR from our display state (which tracks stored marks)
+                  const editorSize = editor.getAttributes('fontSize')?.size || 
+                                     editor.getAttributes('textStyle')?.fontSize;
+                  const displaySize = currentFontSize && currentFontSize !== '-' ? currentFontSize : null;
+                  const current = editorSize || displaySize || '14px';
+                  
+                  const newSize = Math.max(1, parseInt(current.replace('px', '')) - 1) + 'px';
+                  editor.chain().focus().setMark('textStyle', { fontSize: newSize }).run();
+                  // Update display immediately so next click uses this value
+                  setCurrentFontSize(newSize);
+                } else {
+                  // Update display after command
+                  setTimeout(() => {
+                    const updated = editor.getAttributes('fontSize')?.size || 
+                                    editor.getAttributes('textStyle')?.fontSize || '';
+                    setCurrentFontSize(updated);
+                  }, 10);
+                }
+              }}
+              className="p-2 rounded-md hover:bg-gray-200 transition-colors"
+              title="Decrease font size"
+            >
+              -
+            </button>
           <div className="text-xs text-gray-600 w-10 text-center font-medium">{currentFontSize || '-'}</div>
 
           <button
@@ -335,13 +337,16 @@ const TiptapEditor = ({ content, title: initialTitle, onChange }: TiptapEditorPr
           className="p-2 rounded-md hover:bg-gray-200 transition-colors"
           title="Remove link"
         >
-          ×
+          x
         </button>
+        </div>
       </div>
 
-      {/* Editor */}
-      <div className="px-6 py-6 min-h-[400px]">
-        <EditorContent editor={editor} />
+      {/* Editor - Full Width with max-width for readability */}
+      <div className="flex-1 overflow-y-auto px-12 py-8">
+        <div className="max-w-4xl">
+          <EditorContent editor={editor} />
+        </div>
       </div>
     </div>
   );
