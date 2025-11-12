@@ -96,19 +96,21 @@ const TiptapEditor = ({ content, title: initialTitle, onChange }: TiptapEditorPr
   };
 
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col">
       {/* Title input */}
-      <input
-        value={title}
-        onChange={onTitleChange}
-        placeholder="Masukkan judulmu di sini..."
-        className="p-2 mb-2 text-2xl font-bold outline-none border-none focus:outline-none focus:border-none"
-      />
+      <div className="border-b border-gray-200 px-6 pt-6 pb-4">
+        <input
+          value={title}
+          onChange={onTitleChange}
+          placeholder="Untitled"
+          className="w-full text-3xl font-bold outline-none border-none focus:outline-none focus:border-none text-gray-900 placeholder-gray-300"
+        />
+      </div>
 
       {/* Toolbar */}
-      <div className="flex flex-wrap gap-2 items-center bg-gray-50 p-2">
+      <div className="flex flex-wrap gap-1 items-center bg-gray-50 border-b border-gray-200 px-4 py-3">
         {/* Font size controls */}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1 mr-2 border-r border-gray-300 pr-2">
           <button
             onClick={() => {
               // decrease font size
@@ -134,12 +136,12 @@ const TiptapEditor = ({ content, title: initialTitle, onChange }: TiptapEditorPr
                 }, 10);
               }
             }}
-            className="p-2 rounded hover:bg-gray-200"
+            className="p-2 rounded-md hover:bg-gray-200 transition-colors"
             title="Decrease font size"
           >
             -
           </button>
-          <div className="text-sm text-gray-600 w-12 text-center">{currentFontSize || '-'}</div>
+          <div className="text-xs text-gray-600 w-10 text-center font-medium">{currentFontSize || '-'}</div>
 
           <button
             onClick={() => {
@@ -166,7 +168,7 @@ const TiptapEditor = ({ content, title: initialTitle, onChange }: TiptapEditorPr
                 }, 10);
               }
             }}
-            className="p-2 rounded hover:bg-gray-200"
+            className="p-2 rounded-md hover:bg-gray-200 transition-colors"
             title="Increase font size"
           >
             +
@@ -175,8 +177,8 @@ const TiptapEditor = ({ content, title: initialTitle, onChange }: TiptapEditorPr
 
         <button
           onClick={() => editor.chain().focus().toggleBold().run()}
-          className={clsx('p-2 rounded hover:bg-gray-200', {
-            'bg-gray-300': editor.isActive('bold'),
+          className={clsx('p-2 rounded-md hover:bg-gray-200 transition-colors', {
+            'bg-blue-100 text-blue-700': editor.isActive('bold'),
           })}
         >
           <FaBold />
@@ -184,8 +186,8 @@ const TiptapEditor = ({ content, title: initialTitle, onChange }: TiptapEditorPr
 
         <button
           onClick={() => editor.chain().focus().toggleItalic().run()}
-          className={clsx('p-2 rounded hover:bg-gray-200', {
-            'bg-gray-300': editor.isActive('italic'),
+          className={clsx('p-2 rounded-md hover:bg-gray-200 transition-colors', {
+            'bg-blue-100 text-blue-700': editor.isActive('italic'),
           })}
         >
           <FaItalic />
@@ -193,8 +195,8 @@ const TiptapEditor = ({ content, title: initialTitle, onChange }: TiptapEditorPr
 
         <button
           onClick={() => editor.chain().focus().toggleUnderline().run()}
-          className={clsx('p-2 rounded hover:bg-gray-200', {
-            'bg-gray-300': editor.isActive('underline'),
+          className={clsx('p-2 rounded-md hover:bg-gray-200 transition-colors', {
+            'bg-blue-100 text-blue-700': editor.isActive('underline'),
           })}
         >
           <FaUnderline />
@@ -202,8 +204,8 @@ const TiptapEditor = ({ content, title: initialTitle, onChange }: TiptapEditorPr
 
         <button
           onClick={() => editor.chain().focus().toggleStrike().run()}
-          className={clsx('p-2 rounded hover:bg-gray-200', {
-            'bg-gray-300': editor.isActive('strike'),
+          className={clsx('p-2 rounded-md hover:bg-gray-200 transition-colors', {
+            'bg-blue-100 text-blue-700': editor.isActive('strike'),
           })}
         >
           <FaStrikethrough />
@@ -211,8 +213,8 @@ const TiptapEditor = ({ content, title: initialTitle, onChange }: TiptapEditorPr
 
         <button
           onClick={() => editor.chain().focus().toggleCodeBlock().run()}
-          className={clsx('p-2 rounded hover:bg-gray-200', {
-            'bg-gray-300': editor.isActive('codeBlock'),
+          className={clsx('p-2 rounded-md hover:bg-gray-200 transition-colors', {
+            'bg-blue-100 text-blue-700': editor.isActive('codeBlock'),
           })}
         >
           <FaCode />
@@ -220,8 +222,8 @@ const TiptapEditor = ({ content, title: initialTitle, onChange }: TiptapEditorPr
 
         <button
           onClick={() => editor.chain().focus().toggleBlockquote().run()}
-          className={clsx('p-2 rounded hover:bg-gray-200', {
-            'bg-gray-300': editor.isActive('blockquote'),
+          className={clsx('p-2 rounded-md hover:bg-gray-200 transition-colors', {
+            'bg-blue-100 text-blue-700': editor.isActive('blockquote'),
           })}
         >
           <FaQuoteRight />
@@ -229,8 +231,8 @@ const TiptapEditor = ({ content, title: initialTitle, onChange }: TiptapEditorPr
 
         <button
           onClick={() => editor.chain().focus().toggleBulletList().run()}
-          className={clsx('p-2 rounded hover:bg-gray-200', {
-            'bg-gray-300': editor.isActive('bulletList'),
+          className={clsx('p-2 rounded-md hover:bg-gray-200 transition-colors', {
+            'bg-blue-100 text-blue-700': editor.isActive('bulletList'),
           })}
         >
           <FaListUl />
@@ -238,21 +240,21 @@ const TiptapEditor = ({ content, title: initialTitle, onChange }: TiptapEditorPr
 
         <button
           onClick={() => editor.chain().focus().toggleOrderedList().run()}
-          className={clsx('p-2 rounded hover:bg-gray-200', {
-            'bg-gray-300': editor.isActive('orderedList'),
+          className={clsx('p-2 rounded-md hover:bg-gray-200 transition-colors', {
+            'bg-blue-100 text-blue-700': editor.isActive('orderedList'),
           })}
         >
           <FaListOl />
         </button>
 
-        <button onClick={addLink} className="p-2 rounded hover:bg-gray-200">
+        <button onClick={addLink} className="p-2 rounded-md hover:bg-gray-200 transition-colors">
           <FaLink />
         </button>
 
         <button
           onClick={() => editor.chain().focus().toggleHighlight().run()}
-          className={clsx('p-2 rounded hover:bg-gray-200', {
-            'bg-gray-300': editor.isActive('highlight'),
+          className={clsx('p-2 rounded-md hover:bg-gray-200 transition-colors', {
+            'bg-blue-100 text-blue-700': editor.isActive('highlight'),
           })}
         >
           <FaHighlighter />
@@ -260,19 +262,21 @@ const TiptapEditor = ({ content, title: initialTitle, onChange }: TiptapEditorPr
 
         <button
           onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
-          className={clsx('p-2 rounded hover:bg-gray-200', {
-            'bg-gray-300': editor.isActive('heading', { level: 2 }),
+          className={clsx('p-2 rounded-md hover:bg-gray-200 transition-colors', {
+            'bg-blue-100 text-blue-700': editor.isActive('heading', { level: 2 }),
           })}
         >
           <FaHeading />
         </button>
+        
+        <div className="border-l border-gray-300 h-6 mx-1"></div>
         
         <button
           onClick={() => {
             // undo/redo buttons
             editor.chain().focus().undo().run();
           }}
-          className="p-2 rounded hover:bg-gray-200"
+          className="p-2 rounded-md hover:bg-gray-200 transition-colors"
           title="Undo"
         >
           ↶
@@ -282,7 +286,7 @@ const TiptapEditor = ({ content, title: initialTitle, onChange }: TiptapEditorPr
           onClick={() => {
             editor.chain().focus().redo().run();
           }}
-          className="p-2 rounded hover:bg-gray-200"
+          className="p-2 rounded-md hover:bg-gray-200 transition-colors"
           title="Redo"
         >
           ↷
@@ -318,7 +322,7 @@ const TiptapEditor = ({ content, title: initialTitle, onChange }: TiptapEditorPr
               .unsetMark('textStyle')
               .run();
           }}
-          className="p-2 rounded hover:bg-gray-200"
+          className="p-2 rounded-md hover:bg-gray-200 transition-colors"
           title="Clear formatting"
         >
           ⎚
@@ -329,7 +333,7 @@ const TiptapEditor = ({ content, title: initialTitle, onChange }: TiptapEditorPr
             // remove link on selection
             editor.chain().focus().unsetLink().run();
           }}
-          className="p-2 rounded hover:bg-gray-200"
+          className="p-2 rounded-md hover:bg-gray-200 transition-colors"
           title="Remove link"
         >
           ×
@@ -337,7 +341,9 @@ const TiptapEditor = ({ content, title: initialTitle, onChange }: TiptapEditorPr
       </div>
 
       {/* Editor */}
-      <EditorContent editor={editor} />
+      <div className="px-6 py-6 min-h-[400px]">
+        <EditorContent editor={editor} />
+      </div>
     </div>
   );
 };
