@@ -62,13 +62,15 @@ const TiptapEditor = ({ content, title: initialTitle, onChange }: TiptapEditorPr
     onUpdate: ({ editor }) => {
       // keep editor content in sync; title is provided by the input above
       onChange(title, editor.getHTML());
-      // Update current font size display
-      const fontSize = editor.getAttributes('fontSize')?.size || '';
+      // Update current font size display - check both fontSize and textStyle
+      const fontSize = editor.getAttributes('fontSize')?.size || 
+                       editor.getAttributes('textStyle')?.fontSize || '';
       setCurrentFontSize(fontSize);
     },
     onSelectionUpdate: ({ editor }) => {
-      // Update font size display when selection changes
-      const fontSize = editor.getAttributes('fontSize')?.size || '';
+      // Update font size display when selection changes - check both
+      const fontSize = editor.getAttributes('fontSize')?.size || 
+                       editor.getAttributes('textStyle')?.fontSize || '';
       setCurrentFontSize(fontSize);
     },
   });
@@ -113,15 +115,18 @@ const TiptapEditor = ({ content, title: initialTitle, onChange }: TiptapEditorPr
               // eslint-disable-next-line @typescript-eslint/no-explicit-any
               const applied = (editor.commands as any).decreaseFontSize?.();
               if (!applied) {
-                // Read current font size from editor, not from state
-                const current = editor.getAttributes('fontSize')?.size || '14px';
+                // Read current font size from editor state or stored marks
+                const current = editor.getAttributes('fontSize')?.size || 
+                                editor.getAttributes('textStyle')?.fontSize || '14px';
                 const newSize = Math.max(1, parseInt(current.replace('px', '')) - 1) + 'px';
-                editor.chain().focus().setMark('fontSize', { size: newSize }).run();
+                editor.chain().focus().setMark('textStyle', { fontSize: newSize }).run();
+                // Update display immediately
                 setCurrentFontSize(newSize);
               } else {
                 // Update display after command
                 setTimeout(() => {
-                  const updated = editor.getAttributes('fontSize')?.size || 'font size';
+                  const updated = editor.getAttributes('fontSize')?.size || 
+                                  editor.getAttributes('textStyle')?.fontSize || '';
                   setCurrentFontSize(updated);
                 }, 10);
               }
@@ -139,15 +144,18 @@ const TiptapEditor = ({ content, title: initialTitle, onChange }: TiptapEditorPr
               // eslint-disable-next-line @typescript-eslint/no-explicit-any
               const applied = (editor.commands as any).increaseFontSize?.();
               if (!applied) {
-                // Read current font size from editor, not from state
-                const current = editor.getAttributes('fontSize')?.size || '14px';
+                // Read current font size from editor state or stored marks
+                const current = editor.getAttributes('fontSize')?.size || 
+                                editor.getAttributes('textStyle')?.fontSize || '14px';
                 const newSize = (parseInt(current.replace('px', '')) + 1) + 'px';
-                editor.chain().focus().setMark('fontSize', { size: newSize }).run();
+                editor.chain().focus().setMark('textStyle', { fontSize: newSize }).run();
+                // Update display immediately
                 setCurrentFontSize(newSize);
               } else {
                 // Update display after command
                 setTimeout(() => {
-                  const updated = editor.getAttributes('fontSize')?.size || '';
+                  const updated = editor.getAttributes('fontSize')?.size || 
+                                  editor.getAttributes('textStyle')?.fontSize || '';
                   setCurrentFontSize(updated);
                 }, 10);
               }
