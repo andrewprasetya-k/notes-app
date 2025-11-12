@@ -111,16 +111,19 @@ const TiptapEditor = ({ content, title: initialTitle, onChange }: TiptapEditorPr
         <div className="flex items-center gap-2">
           <button
             onClick={() => {
-              // decrease font size - always read from editor state
+              // decrease font size
               // eslint-disable-next-line @typescript-eslint/no-explicit-any
               const applied = (editor.commands as any).decreaseFontSize?.();
               if (!applied) {
-                // Read current font size from editor state or stored marks
-                const current = editor.getAttributes('fontSize')?.size || 
-                                editor.getAttributes('textStyle')?.fontSize || '14px';
+                // Get current from editor OR from our display state (which tracks stored marks)
+                const editorSize = editor.getAttributes('fontSize')?.size || 
+                                   editor.getAttributes('textStyle')?.fontSize;
+                const displaySize = currentFontSize && currentFontSize !== '-' ? currentFontSize : null;
+                const current = editorSize || displaySize || '14px';
+                
                 const newSize = Math.max(1, parseInt(current.replace('px', '')) - 1) + 'px';
                 editor.chain().focus().setMark('textStyle', { fontSize: newSize }).run();
-                // Update display immediately
+                // Update display immediately so next click uses this value
                 setCurrentFontSize(newSize);
               } else {
                 // Update display after command
@@ -140,16 +143,19 @@ const TiptapEditor = ({ content, title: initialTitle, onChange }: TiptapEditorPr
 
           <button
             onClick={() => {
-              // increase font size - always read from editor state
+              // increase font size
               // eslint-disable-next-line @typescript-eslint/no-explicit-any
               const applied = (editor.commands as any).increaseFontSize?.();
               if (!applied) {
-                // Read current font size from editor state or stored marks
-                const current = editor.getAttributes('fontSize')?.size || 
-                                editor.getAttributes('textStyle')?.fontSize || '14px';
+                // Get current from editor OR from our display state (which tracks stored marks)
+                const editorSize = editor.getAttributes('fontSize')?.size || 
+                                   editor.getAttributes('textStyle')?.fontSize;
+                const displaySize = currentFontSize && currentFontSize !== '-' ? currentFontSize : null;
+                const current = editorSize || displaySize || '14px';
+                
                 const newSize = (parseInt(current.replace('px', '')) + 1) + 'px';
                 editor.chain().focus().setMark('textStyle', { fontSize: newSize }).run();
-                // Update display immediately
+                // Update display immediately so next click uses this value
                 setCurrentFontSize(newSize);
               } else {
                 // Update display after command
