@@ -98,12 +98,12 @@ const TiptapEditor = ({ content, title: initialTitle, onChange }: TiptapEditorPr
   return(
     <div className="flex flex-col h-screen">
       {/* Title Section - Full Width */}
-      <div className="px-12 pt-12 pb-6">
+      <div className="px-6 pt-6 pb-6">
         <input
           value={title}
           onChange={onTitleChange}
           placeholder="Untitled"
-          className="w-full text-5xl font-bold outline-none border-none focus:outline-none focus:border-none text-gray-900 placeholder-gray-300 leading-tight"
+          className="w-full text-xl font-bold outline-none border-none focus:outline-none focus:border-none text-gray-900 placeholder-gray-300 leading-tight"
         />
       </div>
 
@@ -343,7 +343,7 @@ const TiptapEditor = ({ content, title: initialTitle, onChange }: TiptapEditorPr
       </div>
 
       {/* Editor - Full Width with max-width for readability */}
-      <div className="flex-1 overflow-y-auto px-12 py-8">
+      <div className="flex-1 overflow-y-auto px-6 py-8">
         <div className="max-w-4xl">
           <EditorContent editor={editor} />
         </div>
