@@ -109,25 +109,46 @@ const NotePage = () => {
   }
 
   return (
-    <div className="p-4">
-      <div className="flex justify-between items-center mb-4">
-        <div className="text-sm text-gray-600">
-          {isSaving && <span>Saving...</span>}
-          {!isSaving && lastSaved && (
-            <span>Last saved: {lastSaved.toLocaleTimeString()}</span>
+    <div className="min-h-screen bg-white">
+  {/* Header */}
+  <div className="bg-gray-50 sticky top-0 z-10">
+    <div className="max-w-5xl mx-auto px-4 py-4">
+      <div className="flex items-center justify-between">
+        {/* Save Status */}
+        <div className="text-sm">
+          {isSaving && (
+            <span className="text-gray-500 flex items-center gap-2">
+              <div className="w-3 h-3 border-2 border-gray-300 border-t-gray-600 rounded-full animate-spin"></div>
+              Saving...
+            </span>
           )}
-          {!isSaving && !lastSaved && <span>Auto-save enabled</span>}
+          {!isSaving && lastSaved && (
+            <span className="text-gray-400">
+              Saved {lastSaved.toLocaleTimeString()}
+            </span>
+          )}
+          {!isSaving && !lastSaved && (
+            <span className="text-gray-400">Auto-save enabled</span>
+          )}
         </div>
-        <button 
-          onClick={handleSave} 
-          className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+
+        {/* Save Button */}
+        <button
+          onClick={handleSave}
           disabled={isSaving}
+          className="px-5 py-2 bg-gray-900 text-white rounded-full hover:bg-gray-800 transition-all font-medium text-sm disabled:opacity-50 disabled:cursor-not-allowed shadow-sm hover:shadow"
         >
           {isSaving ? 'Saving...' : 'Save & Close'}
         </button>
       </div>
-      <TiptapEditor content={content} title={title} onChange={handleEditorChange} />
     </div>
+  </div>
+
+  {/* Editor Content */}
+  <div className="max-w-4xl mx-auto px-6 py-8">
+    <TiptapEditor content={content} title={title} onChange={handleEditorChange} />
+  </div>
+</div>
   );
 };
 
