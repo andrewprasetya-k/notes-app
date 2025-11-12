@@ -6,6 +6,8 @@ import Underline from '@tiptap/extension-underline';
 import Link from '@tiptap/extension-link';
 import Highlight from '@tiptap/extension-highlight';
 import { TextStyle } from '@tiptap/extension-text-style';
+import TaskList from '@tiptap/extension-task-list';
+import TaskItem from '@tiptap/extension-task-item';
 import  FontSize  from 'tiptap-fontsize-extension';
 import { useCallback, useState, useEffect } from 'react';
 import clsx from 'clsx';
@@ -21,6 +23,7 @@ import {
   FaLink,
   FaHighlighter,
   FaHeading,
+  FaCheckSquare,
 } from 'react-icons/fa';
 
 interface TiptapEditorProps {
@@ -48,9 +51,14 @@ const TiptapEditor = ({ content, title: initialTitle, onChange }: TiptapEditorPr
       }),
       Underline,
       Link,
-  TextStyle,
-  // Set global default font size to 14px
-  FontSize.configure({ defaultSize: '14px' }),
+      TextStyle,
+      // Set global default font size to 14px
+      FontSize.configure({ defaultSize: '14px' }),
+      // Task list for checkboxes
+      TaskList,
+      TaskItem.configure({
+        nested: true,
+      }),
     ],
     content,
     editorProps: {
@@ -246,6 +254,16 @@ const TiptapEditor = ({ content, title: initialTitle, onChange }: TiptapEditorPr
           })}
         >
           <FaListOl />
+        </button>
+
+        <button
+          onClick={() => editor.chain().focus().toggleTaskList().run()}
+          className={clsx('p-2 rounded-md hover:bg-gray-200 transition-colors', {
+            'bg-blue-100 text-blue-700': editor.isActive('taskList'),
+          })}
+          title="Task list"
+        >
+          <FaCheckSquare />
         </button>
 
         <button onClick={addLink} className="p-2 rounded-md hover:bg-gray-200 transition-colors">
