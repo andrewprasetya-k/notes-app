@@ -121,31 +121,67 @@ const NewNotePage = () => {
   };
 
   return (
-    <main className="p-4">
-      <div className="mb-2 text-sm text-gray-600">
-        {isSaving && <span>Saving...</span>}
-        {!isSaving && lastSaved && (
-          <span>Last saved: {lastSaved.toLocaleTimeString()}</span>
-        )}
-        {!isSaving && !lastSaved && <span>Not saved yet</span>}
+    <div className="min-h-screen bg-gray-50">
+      {/* Header */}
+      <div className="bg-white border-b border-gray-200 sticky top-0 z-10 shadow-sm">
+        <div className="max-w-5xl mx-auto px-6 py-4">
+          <div className="flex items-center justify-between">
+            {/* Back Button & Save Status */}
+            <div className="flex items-center gap-4">
+              <button
+                onClick={() => router.push('/')}
+                className="text-gray-600 hover:text-gray-900 transition-colors"
+                title="Back to notes"
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                </svg>
+              </button>
+              <div className="text-sm">
+                {isSaving && (
+                  <span className="text-gray-500 flex items-center gap-2">
+                    <div className="w-3 h-3 border-2 border-blue-300 border-t-blue-600 rounded-full animate-spin"></div>
+                    Saving...
+                  </span>
+                )}
+                {!isSaving && lastSaved && (
+                  <span className="text-gray-400">
+                    Saved {lastSaved.toLocaleTimeString()}
+                  </span>
+                )}
+                {!isSaving && !lastSaved && (
+                  <span className="text-gray-400">Auto-save enabled</span>
+                )}
+              </div>
+            </div>
+
+            {/* Action Buttons */}
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => router.push('/')}
+                className="px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-all font-medium text-sm"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleSave}
+                disabled={isSaving}
+                className="px-5 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all font-medium text-sm disabled:opacity-50 disabled:cursor-not-allowed shadow-md hover:shadow-lg"
+              >
+                {isSaving ? 'Saving...' : 'Save & Close'}
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
-      <TiptapEditor content={content} title={title} onChange={handleEditorChange} />
-      <div className="mt-4 flex gap-2">
-        <button
-          onClick={handleSave}
-          disabled={isSaving}
-          className="px-4 py-2 bg-blue-600 text-white rounded disabled:bg-gray-400"
-        >
-          {isSaving ? 'Saving...' : 'Save & Close'}
-        </button>
-        <button
-          onClick={() => router.push('/')}
-          className="px-4 py-2 bg-gray-600 text-white rounded"
-        >
-          Cancel
-        </button>
+
+      {/* Editor Content */}
+      <div className="max-w-5xl mx-auto px-6 py-8">
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+          <TiptapEditor content={content} title={title} onChange={handleEditorChange} />
+        </div>
       </div>
-    </main>
+    </div>
   );
 };
 
