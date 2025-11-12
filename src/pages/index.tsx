@@ -33,7 +33,6 @@ function NotesPage() {
       setNotes(notes.filter(note => note.id !== id));
     }
   }
-
   return (
     <main className="min-h-screen bg-gray-50 p-6">
       <div className="max-w-7xl mx-auto">
@@ -45,12 +44,14 @@ function NotesPage() {
               {notes.length} {notes.length === 1 ? 'note' : 'notes'}
             </p>
           </div>
-          <Link 
-            href="/notes/new"
-            className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all font-medium shadow-md hover:shadow-lg"
-          >
-            + New Note
-          </Link>
+          {notes.length > 0 && (
+            <Link 
+              href="/notes/new"
+              className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all font-medium shadow-md hover:shadow-lg"
+            >
+              + New Note
+            </Link>
+          )}
         </div>
 
         {/* Notes Grid */}
