@@ -54,8 +54,7 @@ const TiptapEditor = ({ content, title: initialTitle, onChange }: TiptapEditorPr
     content,
     editorProps: {
       attributes: {
-        class:
-          'prose-xl sm:prose lg:prose-lg xl:prose-2xl focus:outline-none min-h-[300px] p-4 bg-white',
+        class: 'focus:outline-none',
       },
     },
     // no onCreate auto-heading — title is managed via the title input above
