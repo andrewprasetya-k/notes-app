@@ -109,11 +109,12 @@ const TiptapEditor = ({ content, title: initialTitle, onChange }: TiptapEditorPr
         <div className="flex items-center gap-2">
           <button
             onClick={() => {
-              // decrease font size
+              // decrease font size - always read from editor state
               // eslint-disable-next-line @typescript-eslint/no-explicit-any
               const applied = (editor.commands as any).decreaseFontSize?.();
               if (!applied) {
-                const current = currentFontSize || '14px';
+                // Read current font size from editor, not from state
+                const current = editor.getAttributes('fontSize')?.size || '14px';
                 const newSize = Math.max(1, parseInt(current.replace('px', '')) - 1) + 'px';
                 editor.chain().focus().setMark('fontSize', { size: newSize }).run();
                 setCurrentFontSize(newSize);
@@ -130,15 +131,16 @@ const TiptapEditor = ({ content, title: initialTitle, onChange }: TiptapEditorPr
           >
             -
           </button>
-          <div className="text-sm text-gray-600">{currentFontSize}</div>
+          <div className="text-sm text-gray-600 w-12 text-center">{currentFontSize || '-'}</div>
 
           <button
             onClick={() => {
-              // increase font size
+              // increase font size - always read from editor state
               // eslint-disable-next-line @typescript-eslint/no-explicit-any
               const applied = (editor.commands as any).increaseFontSize?.();
               if (!applied) {
-                const current = currentFontSize || '14px';
+                // Read current font size from editor, not from state
+                const current = editor.getAttributes('fontSize')?.size || '14px';
                 const newSize = (parseInt(current.replace('px', '')) + 1) + 'px';
                 editor.chain().focus().setMark('fontSize', { size: newSize }).run();
                 setCurrentFontSize(newSize);
